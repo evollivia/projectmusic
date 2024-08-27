@@ -1,0 +1,190 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+프로젝트 메인 페이지
+{% endblock %}
+
+{% block style %}
+<style>
+    main {
+        margin: 60px 50px 0 150px;
+        transition: margin 0.5s ease;
+    }
+    #music-player {
+        position: fixed; /* 페이지 스크롤과 상관없이 고정 위치 */
+        bottom: 0; /* 화면 하단에 붙임 */
+        left: 0; /* 왼쪽 끝에 붙임 */
+        width: 100%; /* 전체 너비를 차지 */
+        background-color: #000; /* 배경색을 검은색으로 설정 */
+        padding: 10px; /* 여백 추가 */
+        border-top: 1px solid #333; /* 상단 테두리 추가 (어두운 회색) */
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* 위쪽 그림자 추가 */
+        z-index: 1000; /* 다른 요소들 위에 표시되도록 */
+        text-align: center; /* 텍스트 중앙 정렬 */
+        height: 80px; /* 높이를 80px로 설정하여 길게 보이도록 조정 */
+        display: flex; /* 내부 요소를 수평으로 정렬 */
+        align-items: center; /* 수직으로 중앙 정렬 */
+        justify-content: center; /* 수평으로 중앙 정렬 */
+    }
+    #audio-player {
+        width: 100%; /* 오디오 플레이어가 전체 너비를 차지하도록 설정 */
+    }
+    .d-none {
+        display: none;
+    }
+    .img-fluid {
+        max-width: 100%; /* 이미지의 최대 너비를 100%로 설정 */
+        height: auto; /* 이미지의 높이를 자동으로 설정 */
+    }
+    .section-title {
+        font-size: 1.5rem; /* 제목 폰트 크기 */
+        margin-bottom: 1rem; /* 제목 아래 여백 */
+    }
+    .section {
+        padding: 20px; /* 섹션 안쪽 여백 */
+        border-radius: 8px; /* 모서리 둥글게 */
+        background: linear-gradient(to right,#2b2f32 ,darkgray); /* 배경색 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        margin-bottom: 20px; /* 섹션 간 여백 */
+    }
+    .section img {
+        border-radius: 8px; /* 이미지 모서리 둥글게 */
+    }
+    .section .row {
+        margin-top: -15px; /* 이미지 사이 간격 조정 */
+    }
+    .section h6 {
+        margin-bottom: 10px; /* 제목 아래 여백 */
+        font-size: 1.2rem; /* 제목 폰트 크기 */
+    }
+    .section a {
+        text-decoration: none; /* 링크 기본 밑줄 제거 */
+    }
+    .music-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem; /* 각 항목 간의 여백 조정 */
+    }
+    .mimg {
+        max-width: 50px; /* 이미지 최대 너비 조정 */
+        max-height: 50px; /* 이미지 최대 높이 조정 */
+        width: auto; /* 비율 유지 */
+        height: auto; /* 비율 유지 */
+        margin-right: 1rem; /* 이미지와 텍스트 사이 여백 */
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<!-- Main Content -->
+<main class="content col-md-10 p-3">
+    <!-- Search Bar -->
+    <div class="mb-4">
+    </div>
+    <div class="mb-4 section">
+        <h5 class="section-title">국가별 음악</h5>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h6>K-Pop</h6>
+                <a href="/music/music" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="K-Pop" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>Pop</h6>
+                <a href="/music/music" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="Pop" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>J-Pop</h6>
+                <a href="/music/music" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="J-Pop" class="img-fluid">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4 section">
+        <h5 class="section-title">장르별 음악</h5>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h6>발라드</h6>
+                <a href="/music/music" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="발라드" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>댄스</h6>
+                <a href="/music/music" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="댄스" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>힙합</h6>
+                <a href="/music/music" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="힙합" class="img-fluid">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 10 Playlist -->
+    <div class="mb-4">
+        <h5>추천 10곡</h5>
+        <div class="d-flex flex-column">
+            {% for mpfile in mlist %}
+            <div class="music-list-item">
+                <span><img class="mimg" src="{{ mpfile.img_path }}" alt="{{ mpfile.title }}">
+                    {{ mpfile.title }} - {{ mpfile.name }}</span>
+                <div>
+                    <button class="btn btn-primary btn-sm" onclick="playMusic()">재생</button>
+                    <button class="btn btn-secondary btn-sm">보관함 추가</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- 추가적인 리스트 항목들을 여기에 추가하세요 -->
+    </div>
+</main>
+
+<!-- 음악 플레이어 섹션 -->
+<div id="music-player" class="d-none">
+    <h5 style="color: white; width: 200px">문어의 꿈 - 안예은</h5>
+    <img src="/static/img/totoro.png" alt="K-Pop" class="img-fluid" style="margin-right: 20px; height: 60px; width: 60px">
+    <audio id="audio-player" controls>
+        <source id="audio-source" src="" type="audio/mpeg">
+        브라우저가 오디오 요소를 지원하지 않습니다.
+    </audio>
+</div>
+
+<script>
+    function playMusic() {
+        // 음악 플레이어 섹션을 표시합니다.
+        document.getElementById('music-player').classList.remove('d-none');
+
+        // 오디오 소스와 URL 설정
+        var audioPlayer = document.getElementById('audio-player');
+        var audioSource = document.getElementById('audio-source');
+        audioSource.src = '/static/music/문어의-꿈-안예은.mp3';     // 실제 오디오 파일 URL로 교체
+        audioPlayer.load();
+        audioPlayer.play();
+    }
+</script>
+
+<script>
+    function playMusic() {
+        // 음악 플레이어 섹션을 표시합니다.
+        document.getElementById('music-player').classList.remove('d-none');
+
+        // 오디오 소스와 URL 설정 (예시 URL을 사용, 실제 URL로 변경해야 함)
+        var audioPlayer = document.getElementById('audio-player');
+        var audioSource = document.getElementById('audio-source');
+        audioSource.src = 'https://www.youtube.com/watch?v=LBmB3DGxnNk'; // 실제 오디오 파일 URL로 교체
+        audioPlayer.load();
+        audioPlayer.play();
+    }
+</script>
+{% endblock %}
+

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup - MusicStream</title>
+    <!-- Bootstrap CDN -->
+    <link href="/static/css/bs5/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: darkgray;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            width: 400px;
+            background-color: #1F1F1F;
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            max-width: 300px;
+            height: auto;
+            /*margin-bottom: 20px;*/
+        }
+    </style>
+</head>
+
+{% block style %}
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer></script>
+<script type="text/javascript">
+  var onloadCallback = () => {
+    grecaptcha.render('captcha', { 'sitekey' : '6LeMoCsqAAAAABZV_wacgd68VMZQnm17fubv6QHh' });
+  };
+</script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="signup-container">
+            <div class="text-center mb-4">
+                <img src="/static/img/logo.png" alt="로고" class="logo">
+            </div>
+            <form name="joinfrm" id="joinfrm">
+                <div class="mb-3">
+                    <label for="userid" class="form-label">아이디</label>
+                    <input type="text" class="form-control" name="userid" id="userid" required>
+                </div>
+                <div class="mb-3">
+                    <label for="passwd" class="form-label">비밀번호</label>
+                    <input type="password" class="form-control" name="passwd" id="passwd" required>
+                </div>
+                <div class="mb-3">
+                    <label for="repasswd" class="form-label">비밀번호 확인</label>
+                    <input type="password" class="form-control" name="repasswd" id="repasswd" required>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">이름</label>
+                    <input type="text" class="form-control" name="name" id="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">이메일</label>
+
+                    <input type="email" class="form-control" name="email" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="captcha" class="form-label">자동가입방지</label>
+                    <div id="captcha"></div>
+                </div>
+
+                <button type="button" id="joinbtn" class="btn btn-primary w-100">회원가입</button>
+                <div class="text-center mt-3">
+                    <p>계정이 이미 있으신가요? <a href="/">Login</a></p>
+                </div>
+            </form>
+        </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+<script>
+    // 회원정보를 입력받아 폼 유효성 검사 수행 후
+    // 입력한 정보를 json 형식으로 생성한 후 서버로 전송
+    let joinbtn = document.querySelector('#joinbtn');
+    let joinfrm = document.joinfrm;
+
+    // 회원 가입 폼 체크 함수
+    let checkjoinfrm = (frm) => {
+        if (frm.userid.value === ''){
+            alert('아이디를 입력하세요!');
+            frm.userid.focus();
+            return false;
+        }
+        else if (frm.passwd.value === ''){
+            alert('비밀번호를 입력하세요!');
+            frm.passwd.focus();
+            return false;
+        }
+        else if (frm.repasswd.value === ''){
+            alert('비밀번호 확인을 입력하세요!');
+            frm.repasswd.focus();
+            return false;
+        }
+        else if (frm.passwd.value !== frm.repasswd.value){
+            alert('비밀번호가 일치하는 확인하세요!');
+            frm.repasswd.focus();
+            return false;
+        }
+        else if (frm.name.value === ''){
+            alert('이름을 입력하세요!');
+            frm.name.focus();
+            return false;
+        }
+        else if (frm.email.value === ''){
+            alert('이메일을 입력하세요!');
+            frm.email.focus();
+            return false;
+        } else if (grecaptcha.getResponse() === '') {
+            alert('자동가입 방지를 클릭하세요!');
+            return false;
+        } else {
+            alert('회원가입 성공! 로그인을 해주세요.');
+            return true;
+        }
+    };
+
+    joinbtn.addEventListener('click', () => {
+
+        if (!checkjoinfrm(joinfrm)) return;
+
+        const formData = new FormData(joinfrm);
+
+        console.log(formData);
+
+        let jsondata = {};
+        formData.forEach((val, key) => {
+            jsondata[key] = val;
+        });
+        jsondata['captcha'] = grecaptcha.getResponse();
+
+        console.log(jsondata);
+
+        // ajax를 이용해서 서버로 json 데이터 전송하고 결과 받음
+        fetch('/member/join', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsondata),
+
+            redirect: 'follow'
+        }).then((res) => {
+            if (res.redirected) location.href = res.url;
+        });
+    });
+
+</script>
+{% endblock %}

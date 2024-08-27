@@ -1,0 +1,97 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+프로젝트 게시판 읽기 페이지
+{% endblock %}
+
+{% block main %}
+<main>
+<div id="wrap" class="container mt-5">
+    <main>
+        <h2 class="text-center mb-4">글읽기</h2>
+        <div class="card">
+            <div class="card-body">
+                <!-- Post Title -->
+                <div class="mb-3 row">
+                    <label for="title" class="col-sm-2 col-form-label">제 목</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="title" value="게시물 제목" readonly>
+                    </div>
+                </div>
+                <!-- Post Author -->
+                <div class="mb-3 row">
+                    <label for="userid" class="col-sm-2 col-form-label">작성자</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="userid" value="작성자 아이디" readonly>
+                    </div>
+                </div>
+                <!-- Post Content -->
+                <div class="mb-3 row">
+                    <label for="contents" class="col-sm-2 col-form-label">본 문</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="contents" rows="10" readonly>게시물 본문 내용이 여기에 표시됩니다.</textarea>
+                    </div>
+                </div>
+                <!-- File Upload (if any) -->
+                <div class="mb-3 row">
+                    <label for="uploadedFile" class="col-sm-2 col-form-label">첨부 파일</label>
+                    <div class="col-sm-10">
+                        <a href="/path/to/uploaded/file" class="form-control-plaintext">uploaded_file_name.ext</a>
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div class="text-center mb-4">
+                    <button type="button" class="btn btn-secondary me-2" onclick="location.href='/board/list'">리스트로</button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='/board/modify'">수정하기</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">삭제하기</button>
+                </div>
+
+                <!-- Comment Section -->
+                <h3 class="text-center mt-4">댓글</h3>
+
+                <!-- Comment List -->
+                <div class="mb-4">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>댓글 작성자 1:</strong> 이 게시물 정말 유익하네요! <small class="text-muted">2024-08-20</small>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>댓글 작성자 2:</strong> 좋은 정보 감사합니다. <small class="text-muted">2024-08-21</small>
+                        </li>
+                        <!-- 추가적인 댓글들은 이곳에 표시됩니다 -->
+                    </ul>
+                </div>
+
+                <!-- Comment Form -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h4 class="card-title">댓글 쓰기</h4>
+                        <form action="/board/comment" method="post">
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">댓글 내용</label>
+                                <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">댓글 등록</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/bs5/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmDelete() {
+        if (confirm('이 게시물을 삭제하시겠습니까?')) {
+            // 삭제 로직을 여기에 추가하십시오.
+            location.href = '/board/delete';
+        }
+    }
+</script>
+{% endblock %}

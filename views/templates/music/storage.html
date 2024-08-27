@@ -1,0 +1,139 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+프로젝트 - 보관함
+{% endblock %}
+
+{% block main %}
+<main>
+<div id="wrap" class="container mt-5">
+    <main>
+        <h2 class="text-center mb-4">게시판 목록</h2>
+        <div class="card">
+            <div class="card-body">
+                <!-- Table to display the list of posts -->
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">노래제목</th>
+                        <th scope="col">가수</th>
+                        <th scope="col">보관함 등록일</th>
+                        <th scope="col">조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td><button class="btn btn-primary btn-sm" id="playButton">That's life</button></td>
+                        <td>Frank Sinatra</td>
+                        <td>2024-08-20</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td><button class="btn btn-primary btn-sm" id="playButton2">sound2</button></td>
+                        <td>Sound 2 Artist</td>
+                        <td>2024-08-20</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td><button class="btn btn-primary btn-sm" id="playButton3">sound3</button></td>
+                        <td>Sound 3 Artist</td>
+                        <td>2024-08-20</td>
+                        <td>12</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Audio Tags; hidden processing -->
+<audio id="audioPlayer" src="/static/img/sound.mp3" preload="auto"></audio>
+<audio id="audioPlayer2" src="/static/img/sound2.mp3" preload="auto"></audio>
+<audio id="audioPlayer3" src="/static/img/sound3.mp3" preload="auto"></audio>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/bs5/bootstrap.bundle.min.js"></script>
+<script>
+    // Get audio player elements
+    const audio1 = document.getElementById('audioPlayer');
+    const audio2 = document.getElementById('audioPlayer2');
+    const audio3 = document.getElementById('audioPlayer3');
+
+    const playButton1 = document.getElementById('playButton');
+    const playButton2 = document.getElementById('playButton2');
+    const playButton3 = document.getElementById('playButton3');
+
+    // Current audio index
+    let currentAudioIndex = 1; // Start from the first audio
+
+    // Function to play audio in sequence
+    function playNext() {
+        switch (currentAudioIndex) {
+            case 1:
+                audio1.play();
+                playButton1.textContent = "Pause"; // Change button text to "Pause"
+                audio1.onended = function() {
+                    currentAudioIndex = 2; // Move to the next audio
+                    playNext(); // Play the next audio
+                };
+                break;
+            case 2:
+                audio2.play();
+                playButton2.textContent = "Pause"; // Change button text to "Pause"
+                audio2.onended = function() {
+                    currentAudioIndex = 3; // Move to the next audio
+                    playNext(); // Play the next audio
+                };
+                break;
+            case 3:
+                audio3.play();
+                playButton3.textContent = "Pause"; // Change button text to "Pause"
+                audio3.onended = function() {
+                    playButton3.textContent = "sound3"; // Restore button text for sound3
+                    currentAudioIndex = 1; // Reset to the first audio for next playback
+                };
+                break;
+        }
+    }
+
+    // Play button for the first audio
+    playButton1.addEventListener('click', function() {
+        if (audio1.paused) {
+            audio1.play();
+            playButton1.textContent = "Pause"; // Change button text to "Pause"
+        } else {
+            audio1.pause();
+            playButton1.textContent = "sound1"; // Restore button text
+        }
+        playNext(); // Start playback
+    });
+
+    // Independent play/pause for sound2 and sound3
+    playButton2.addEventListener('click', function() {
+        if (audio2.paused) {
+            audio2.play();
+            playButton2.textContent = "Pause"; // Change button text to "Pause"
+        } else {
+            audio2.pause();
+            playButton2.textContent = "sound2"; // Restore button text
+        }
+    });
+
+    playButton3.addEventListener('click', function() {
+        if (audio3.paused) {
+            audio3.play();
+            playButton3.textContent = "Pause"; // Change button text to "Pause"
+        } else {
+            audio3.pause();
+            playButton3.textContent = "sound3"; // Restore button text
+        }
+    });
+</script>
+{% endblock %}
