@@ -10,13 +10,13 @@
     <style>
         body {
             background-color: darkgray;
-            /*background-image: url("../static/img/sound.png");*/
-            /*background-repeat: no-repeat;*/
-            /*background-size: cover;*/
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
         .login-container {
@@ -25,18 +25,30 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            width: 400px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 400px;
+            margin: 30px;
         }
         .logo {
             max-width: 300px;
             height: auto;
             /*margin-bottom: 20px;*/
         }
+        .welcome-message {
+            text-align: center;
+            color: orange;
+            margin-bottom: 30px;
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
     </style>
 </head>
 
 <body>
+<div class="welcome-message">
+    <p>GitMusic에 오신것을 환영합니다</p>
+</div>
 <div class="login-container">
     <div class="text-center mb-4">
         <img src="/static/img/logo.png" alt="로고" class="logo">
@@ -60,36 +72,36 @@
 <script src="/static/js/bs5/bootstrap.bundle.min.js"></script>
 
 {% block script %}
-<script>
-    let loginfrm = document.loginfrm;
+    <script>
+        let loginfrm = document.loginfrm;
 
-    loginfrm.addEventListener('submit', (e) => {
-        e.preventDefault(); // 버튼의 submit 기능 중지
+        loginfrm.addEventListener('submit', (e) => {
+            e.preventDefault(); // 버튼의 submit 기능 중지
 
-        // 폼에 입력된 회원 정보를 초기화함
-        const formData = new FormData(loginfrm);
+            // 폼에 입력된 회원 정보를 초기화함
+            const formData = new FormData(loginfrm);
 
-        console.log(formData);
+            console.log(formData);
 
-        // 서버로 보내기 위해 폼데이터를 JSON객체로 변환
-        let jsondata = {};
-        formData.forEach((val, key) => {
-            jsondata[key] = val;
+            // 서버로 보내기 위해 폼데이터를 JSON객체로 변환
+            let jsondata = {};
+            formData.forEach((val, key) => {
+                jsondata[key] = val;
+            });
+            console.log(jsondata);
+
+            fetch('/member/login', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsondata),
+                redirect: 'follow'
+            }).then((res) => {
+                if (res.redirected) location.href = res.url;
+            });
         });
-        console.log(jsondata);
-
-        fetch('/member/login', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsondata),
-            redirect: 'follow'
-        }).then((res) => {
-            if (res.redirected) location.href = res.url;
-        });
-    });
-</script>
+    </script>
 {% endblock %}
 
